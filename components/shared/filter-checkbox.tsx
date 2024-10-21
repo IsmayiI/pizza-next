@@ -1,6 +1,6 @@
 import { Checkbox } from '../ui';
 
-interface Props {
+export interface FilterCheckboxProps {
    text: string;
    value: string;
    endAdornment?: React.ReactNode;
@@ -14,7 +14,7 @@ export const FilterCheckbox = ({
    endAdornment,
    onCheckedChange,
    checked,
-}: Props) => {
+}: FilterCheckboxProps) => {
    return (
       <div className="flex items-center space-x-2">
          <Checkbox
