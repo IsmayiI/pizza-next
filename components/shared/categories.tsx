@@ -4,7 +4,7 @@ interface Props {
    className?: string
 }
 
-const cats = ['Пиццы', 'Комбо', 'Закуски', 'Коктейли', 'Кофе', 'Напитки', 'Десерты', 'Десерты'];
+const cats = ['Пиццы', 'Комбо', 'Закуски', 'Коктейли', 'Кофе', 'Напитки', 'Десерты'];
 const activeIndex = 0;
 
 export const Categories = ({ className }: Props) => {
