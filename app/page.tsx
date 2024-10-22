@@ -24,14 +24,50 @@ export default function Home() {
                            name: 'название',
                            imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
                            items: [{ price: 100 }]
-                        }
-                     ]} />
-                     <ProductsGroupList title="Закуски" categoryId={2} items={[
+                        },
                         {
                            id: 2,
-                           name: 'name',
+                           name: 'название',
                            imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
                            items: [{ price: 200 }]
+                        },
+                        {
+                           id: 3,
+                           name: 'название',
+                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
+                           items: [{ price: 300 }]
+                        },
+                        {
+                           id: 4,
+                           name: 'название',
+                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
+                           items: [{ price: 400 }]
+                        }
+                     ]} />
+                     <ProductsGroupList title="Комбо" categoryId={2} items={[
+                        {
+                           id: 1,
+                           name: 'название',
+                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
+                           items: [{ price: 100 }]
+                        },
+                        {
+                           id: 2,
+                           name: 'название',
+                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
+                           items: [{ price: 200 }]
+                        },
+                        {
+                           id: 3,
+                           name: 'название',
+                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
+                           items: [{ price: 300 }]
+                        },
+                        {
+                           id: 4,
+                           name: 'название',
+                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
+                           items: [{ price: 400 }]
                         }
                      ]} />
                   </div>
