@@ -10,8 +10,9 @@ export async function GET(req: NextRequest) {
          OR: [
             { name: { contains: query.charAt(0).toUpperCase() + query.slice(1) } },
             { name: { contains: query } }
-         ]
-      }
+         ],
+      },
+      take: 5
    })
 
    return NextResponse.json(products)
