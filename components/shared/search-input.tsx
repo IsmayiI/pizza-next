@@ -1,14 +1,16 @@
 'use client'
 
 import { cn } from "@/lib/utils"
+import { Api } from "@/services/api-client"
 import { Search } from "lucide-react"
 import Link from "next/link"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useClickAway } from "react-use"
 
 interface Props { }
 
 export const SearchInput = ({ }: Props) => {
+   const [searchQuery, setSearchQuery] = useState('')
    const [focused, setFocused] = useState(false)
 
    const ref = useRef(null)
@@ -16,6 +18,10 @@ export const SearchInput = ({ }: Props) => {
    useClickAway(ref, () => {
       setFocused(false)
    });
+
+   useEffect(() => {
+      Api.products.search(searchQuery)
+   }, [searchQuery])
 
    return (
       <>
@@ -29,6 +35,8 @@ export const SearchInput = ({ }: Props) => {
                type="text"
                placeholder="Найти пиццу..."
                onFocus={() => setFocused(true)}
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <div className={cn(
                'absolute w-full bg-white rounded-xl py-2 top-14 shadow-md transition-all duration-200 invisible opacity-0 z-30',
