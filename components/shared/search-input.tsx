@@ -32,6 +32,13 @@ export const SearchInput = ({ }: Props) => {
       250,
       [searchQuery])
 
+
+   const onClickHandler = () => {
+      setFocused(false)
+      setSearchQuery('')
+      setProducts([])
+   }
+
    return (
       <>
          {focused && (
@@ -52,7 +59,11 @@ export const SearchInput = ({ }: Props) => {
                focused && 'visible opacity-100 top-12',
             )}>
                {products.map((product) => (
-                  <Link key={product.id} className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10" href={`/product/${product.id}`}>
+                  <Link
+                     onClick={onClickHandler}
+                     key={product.id}
+                     className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10"
+                     href={`/product/${product.id}`}>
                      <img className="rounded-sm h-8 w-8" src={product.imageUrl} alt={product.name} />
                      <span>
                         {product.name}
