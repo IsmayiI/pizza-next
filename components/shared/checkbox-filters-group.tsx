@@ -10,11 +10,12 @@ interface Props {
    title: string;
    items: Item[];
    defaultItems: Item[];
+   selectedIds?: Set<string>;
    limit?: number;
    loading: boolean;
    searchInputPlaceholder?: string;
    className?: string;
-   onChange?: (values: string[]) => void;
+   onclickCheckbox?: (id: string) => void;
    defaultValue?: string[];
 }
 
@@ -22,11 +23,12 @@ export const CheckboxFiltersGroup = ({
    title,
    items,
    defaultItems,
+   selectedIds,
    limit = 5,
    loading,
    searchInputPlaceholder = 'Поиск...',
    className,
-   onChange,
+   onclickCheckbox,
    defaultValue,
 }: Props) => {
 
@@ -73,11 +75,12 @@ export const CheckboxFiltersGroup = ({
          <div className="flex flex-col gap-4 max-h-96 pr-2 overflow-auto scrollbar">
             {list.map((item, index) => (
                <FilterCheckbox
-                  onCheckedChange={(ids) => console.log(ids)}
-                  checked={false}
+                  onCheckedChange={() => onclickCheckbox?.(item.value)}
+                  checked={selectedIds?.has(item.value)}
                   key={index}
-                  value={item.value}
+                  value={item.text}
                   text={item.text}
+                  type={item.type}
                   endAdornment={item.endAdornment}
                />
             ))}

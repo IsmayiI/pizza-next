@@ -12,11 +12,12 @@ interface Props {
 }
 
 export const Filters = ({ className }: Props) => {
-   const { ingredients, loading } = useFilterIngredients()
+   const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients()
 
    const items = ingredients.map((item) => ({
       text: item.name,
       value: String(item.id),
+      type: 'ingredient',
    }))
 
 
@@ -25,8 +26,8 @@ export const Filters = ({ className }: Props) => {
          <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
 
          <div className="flex flex-col gap-4">
-            <FilterCheckbox text="Можно собирать" value="1" />
-            <FilterCheckbox text="Новинки" value="2" />
+            <FilterCheckbox type="первый" text="Можно собирать" value="1" />
+            <FilterCheckbox type="первый" text="Новинки" value="2" />
          </div>
 
          <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
@@ -45,6 +46,8 @@ export const Filters = ({ className }: Props) => {
             items={items}
             limit={6}
             loading={loading}
+            onclickCheckbox={onAddId}
+            selectedIds={selectedIds}
          />
       </div>
    )
