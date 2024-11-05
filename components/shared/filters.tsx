@@ -1,3 +1,6 @@
+'use client'
+
+import { useFilterIngredients } from "@/hooks"
 import { Input } from "../ui"
 import { CheckboxFiltersGroup } from "./checkbox-filters-group"
 import { FilterCheckbox } from "./filter-checkbox"
@@ -9,6 +12,14 @@ interface Props {
 }
 
 export const Filters = ({ className }: Props) => {
+   const { ingredients, loading } = useFilterIngredients()
+
+   const items = ingredients.map((item) => ({
+      text: item.name,
+      value: String(item.id),
+   }))
+
+
    return (
       <div className={className}>
          <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
@@ -29,83 +40,11 @@ export const Filters = ({ className }: Props) => {
 
          <CheckboxFiltersGroup
             className="mt-5"
-            title="Формат"
-            defaultItems={[
-               {
-                  text: 'Сырный соус',
-                  value: '1',
-               },
-               {
-                  text: 'Моццарелла',
-                  value: '2',
-               },
-               {
-                  text: 'Чеснок',
-                  value: '3',
-               },
-               {
-                  text: 'Солённые огурчики',
-                  value: '4',
-               },
-               {
-                  text: 'Красный лук',
-                  value: '5',
-               },
-               {
-                  text: 'Томаты',
-                  value: '6',
-               },
-            ]}
-            items={[
-               {
-                  text: 'Сырный соус',
-                  value: '1',
-               },
-               {
-                  text: 'Моццарелла',
-                  value: '2',
-               },
-               {
-                  text: 'Чеснок',
-                  value: '3',
-               },
-               {
-                  text: 'Солённые огурчики',
-                  value: '4',
-               },
-               {
-                  text: 'Красный лук',
-                  value: '5',
-               },
-               {
-                  text: 'Томаты',
-                  value: '6',
-               },
-               {
-                  text: 'Сырный соус',
-                  value: '1',
-               },
-               {
-                  text: 'Моццарелла',
-                  value: '2',
-               },
-               {
-                  text: 'Чеснок',
-                  value: '3',
-               },
-               {
-                  text: 'Солённые огурчики',
-                  value: '4',
-               },
-               {
-                  text: 'Красный лук',
-                  value: '5',
-               },
-               {
-                  text: 'Томаты',
-                  value: '6',
-               },
-            ]}
+            title="Ингредиенты"
+            defaultItems={items}
+            items={items}
+            limit={6}
+            loading={loading}
          />
       </div>
    )
