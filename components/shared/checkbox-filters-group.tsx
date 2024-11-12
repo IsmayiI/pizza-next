@@ -8,11 +8,12 @@ interface Item extends FilterCheckboxProps { }
 
 interface Props {
    title: string;
+   name: string;
    items: Item[];
-   defaultItems: Item[];
-   selectedIds?: Set<string>;
+   defaultItems?: Item[];
+   selected?: Set<string>;
    limit?: number;
-   loading: boolean;
+   loading?: boolean;
    searchInputPlaceholder?: string;
    className?: string;
    onclickCheckbox?: (id: string) => void;
@@ -21,9 +22,10 @@ interface Props {
 
 export const CheckboxFiltersGroup = ({
    title,
+   name,
    items,
    defaultItems,
-   selectedIds,
+   selected,
    limit = 5,
    loading,
    searchInputPlaceholder = 'Поиск...',
@@ -52,7 +54,7 @@ export const CheckboxFiltersGroup = ({
 
    const list = showAll
       ? items.filter(item => item.text.toLowerCase().includes(seacrh.toLowerCase()))
-      : defaultItems.slice(0, limit)
+      : (defaultItems || items).slice(0, limit)
 
    const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
       setSeacrh(e.target.value)
@@ -76,11 +78,11 @@ export const CheckboxFiltersGroup = ({
             {list.map((item, index) => (
                <FilterCheckbox
                   onCheckedChange={() => onclickCheckbox?.(item.value)}
-                  checked={selectedIds?.has(item.value)}
+                  checked={selected?.has(item.value)}
                   key={index}
                   value={item.text}
                   text={item.text}
-                  type={item.type}
+                  name={name}
                   endAdornment={item.endAdornment}
                />
             ))}
