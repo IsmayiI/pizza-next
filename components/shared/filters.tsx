@@ -5,24 +5,86 @@ import { Input } from "../ui"
 import { CheckboxFiltersGroup } from "./checkbox-filters-group"
 import { RangeSlider } from "./range-slider"
 import { Title } from "./title"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSet } from "react-use"
+import qs from "qs"
+import { useRouter } from "next/navigation"
 
 interface Props {
    className?: string
 }
 
 interface PriceProps {
-   priceFrom: number
-   priceTo: number
+   priceFrom?: number
+   priceTo?: number
 }
 
 export const Filters = ({ className }: Props) => {
-   const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients()
-   const [price, setPrice] = useState<PriceProps>({ priceFrom: 0, priceTo: 1000 })
+   const router = useRouter()
+   const { ingredients, loading, onAddId, selectedIngredients } = useFilterIngredients()
+   const [price, setPrice] = useState<PriceProps>({})
 
    const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
    const [pizzaTypes, { toggle: togglePizzaTypes }] = useSet(new Set<string>([]));
+
+   const isFirstRender = useRef(true)
+   const isSecondRender = useRef(true)
+
+
+
+
+   useEffect(() => {
+
+      if (isFirstRender.current) {
+         isFirstRender.current = false
+         return
+      }
+
+      let filters
+
+      if (isSecondRender.current && !!localStorage.getItem('filters')) {
+         const filtersLC = JSON.parse(localStorage.getItem('filters')!)
+
+         filters = {
+            ...filtersLC
+         }
+
+         const price = { priceFrom: +filters.priceFrom, priceTo: +filters.priceTo }
+
+
+         if (price.priceFrom && price.priceTo) setPrice(price)
+         filters.sizes.forEach((size: string) => sizes.add(size))
+         filters.pizzaTypes.forEach((pizzaType: string) => pizzaTypes.add(pizzaType))
+         filters.ingredients.forEach((ingredient: string) => selectedIngredients.add(ingredient))
+
+
+         console.log(filters, 1);
+
+
+      } else {
+         filters = {
+            ...price,
+            sizes: Array.from(sizes),
+            pizzaTypes: Array.from(pizzaTypes),
+            ingredients: Array.from(selectedIngredients),
+         }
+         console.log(filters, 2);
+
+      }
+
+      console.log(filters, 3);
+
+      const query = qs.stringify(filters, {
+         arrayFormat: "comma"
+      })
+
+      router.push(`?${query}`, { scroll: false })
+
+      localStorage.setItem('filters', JSON.stringify(filters))
+
+      isSecondRender.current = false
+
+   }, [pizzaTypes, sizes, price, selectedIngredients])
 
 
    const items = ingredients.map((item) => ({
@@ -36,10 +98,6 @@ export const Filters = ({ className }: Props) => {
          [name]: value,
       }))
    }
-
-
-   console.log(selectedIds);
-
 
 
    return (
@@ -85,7 +143,7 @@ export const Filters = ({ className }: Props) => {
                   onChange={(e) => updatePrice('priceTo', +e.target.value)} />
             </div>
             <RangeSlider min={0} max={1000} step={10}
-               value={[price.priceFrom, price.priceTo]}
+               value={[price.priceFrom || 0, price.priceTo || 1000]}
                onValueChange={([priceFrom, priceTo]) => setPrice({ priceFrom, priceTo })} />
          </div>
 
@@ -99,7 +157,7 @@ export const Filters = ({ className }: Props) => {
             limit={6}
             loading={loading}
             onclickCheckbox={onAddId}
-            selected={selectedIds}
+            selected={selectedIngredients}
          />
       </div>
    )
