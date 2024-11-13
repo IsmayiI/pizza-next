@@ -1,12 +1,26 @@
 import { Container, Filters, ProductsGroupList, Title, TopBar } from "@/components/shared";
+import { prisma } from "@/prisma/prisma-client";
 
-export default function Home() {
+export default async function Home() {
+
+   const categories = await prisma.category.findMany({
+      include: {
+         products: {
+            include: {
+               items: true,
+               ingredients: true
+            }
+         }
+      }
+   })
+
+
    return (
       <>
          <Container className="mt-10">
             <Title text="Все пиццы" size="lg" className="font-extrabold" />
          </Container>
-         <TopBar />
+         <TopBar categories={categories.filter((category) => category.products.length > 0)} />
          <Container className="mt-10 pb-14">
             <div className="flex gap-[80px]">
 
@@ -18,58 +32,14 @@ export default function Home() {
                {/* Список товаров */}
                <div className="flex-1">
                   <div className="flex flex-col gap-16">
-                     <ProductsGroupList title="Пиццы" categoryId={1} items={[
-                        {
-                           id: 1,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 100 }]
-                        },
-                        {
-                           id: 2,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 200 }]
-                        },
-                        {
-                           id: 3,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 300 }]
-                        },
-                        {
-                           id: 4,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 400 }]
-                        }
-                     ]} />
-                     <ProductsGroupList title="Комбо" categoryId={2} items={[
-                        {
-                           id: 1,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 100 }]
-                        },
-                        {
-                           id: 2,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 200 }]
-                        },
-                        {
-                           id: 3,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 300 }]
-                        },
-                        {
-                           id: 4,
-                           name: 'название',
-                           imageUrl: 'https://media.dodostatic.net/image/r:584x584/11EE7D612FC7B7FCA5BE822752BEE1E5.avif',
-                           items: [{ price: 400 }]
-                        }
-                     ]} />
+                     {categories.map((category) => (
+                        <ProductsGroupList
+                           key={category.id}
+                           categoryId={category.id}
+                           title={category.name}
+                           items={category.products}
+                        />
+                     ))}
                   </div>
                </div>
 
