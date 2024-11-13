@@ -8,7 +8,7 @@ import { Title } from "./title"
 import { useEffect, useRef, useState } from "react"
 import { useSet } from "react-use"
 import qs from "qs"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 interface Props {
    className?: string
@@ -19,70 +19,40 @@ interface PriceProps {
    priceTo?: number
 }
 
+interface Queryfilters extends PriceProps {
+   sizes: string
+   pizzaTypes: string
+   ingredients: string
+}
+
 export const Filters = ({ className }: Props) => {
+   const searchParams = useSearchParams() as unknown as Map<keyof Queryfilters, string>
    const router = useRouter()
-   const { ingredients, loading, onAddId, selectedIngredients } = useFilterIngredients()
-   const [price, setPrice] = useState<PriceProps>({})
+   const { ingredients, loading, onAddId, selectedIngredients } = useFilterIngredients(searchParams.get('ingredients')?.split(','))
+   const [price, setPrice] = useState<PriceProps>({
+      priceFrom: Number(searchParams.get('priceFrom')) || undefined,
+      priceTo: Number(searchParams.get('priceTo')) || undefined
+   })
 
-   const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
-   const [pizzaTypes, { toggle: togglePizzaTypes }] = useSet(new Set<string>([]));
-
-   const isFirstRender = useRef(true)
-   const isSecondRender = useRef(true)
-
+   const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>(searchParams.get("sizes")?.split(',') || []));
+   const [pizzaTypes, { toggle: togglePizzaTypes }] = useSet(new Set<string>(searchParams.get('pizzaTypes')?.split(',') || []));
 
 
 
    useEffect(() => {
 
-      if (isFirstRender.current) {
-         isFirstRender.current = false
-         return
+      const filters = {
+         ...price,
+         sizes: Array.from(sizes),
+         pizzaTypes: Array.from(pizzaTypes),
+         ingredients: Array.from(selectedIngredients),
       }
-
-      let filters
-
-      if (isSecondRender.current && !!localStorage.getItem('filters')) {
-         const filtersLC = JSON.parse(localStorage.getItem('filters')!)
-
-         filters = {
-            ...filtersLC
-         }
-
-         const price = { priceFrom: +filters.priceFrom, priceTo: +filters.priceTo }
-
-
-         if (price.priceFrom && price.priceTo) setPrice(price)
-         filters.sizes.forEach((size: string) => sizes.add(size))
-         filters.pizzaTypes.forEach((pizzaType: string) => pizzaTypes.add(pizzaType))
-         filters.ingredients.forEach((ingredient: string) => selectedIngredients.add(ingredient))
-
-
-         console.log(filters, 1);
-
-
-      } else {
-         filters = {
-            ...price,
-            sizes: Array.from(sizes),
-            pizzaTypes: Array.from(pizzaTypes),
-            ingredients: Array.from(selectedIngredients),
-         }
-         console.log(filters, 2);
-
-      }
-
-      console.log(filters, 3);
 
       const query = qs.stringify(filters, {
          arrayFormat: "comma"
       })
 
       router.push(`?${query}`, { scroll: false })
-
-      localStorage.setItem('filters', JSON.stringify(filters))
-
-      isSecondRender.current = false
 
    }, [pizzaTypes, sizes, price, selectedIngredients])
 

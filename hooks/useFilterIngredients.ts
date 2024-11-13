@@ -11,11 +11,11 @@ interface ReturnProps {
 }
 
 
-export const useFilterIngredients = (): ReturnProps => {
+export const useFilterIngredients = (values: string[] = []): ReturnProps => {
    const [ingredients, setIngredients] = useState<Ingredient[]>([])
    const [loading, setLoading] = useState(true)
 
-   const [selectedIngredients, { toggle }] = useSet(new Set<string>([]));
+   const [selectedIngredients, { toggle }] = useSet(new Set<string>(values));
 
 
    useEffect(() => {
