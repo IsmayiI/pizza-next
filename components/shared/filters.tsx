@@ -1,73 +1,33 @@
 'use client'
 
-import { useFilterIngredients } from "@/hooks"
+import { useGetIngredients, useFilters, useQueryFilters } from "@/hooks"
 import { Input } from "../ui"
 import { CheckboxFiltersGroup } from "./checkbox-filters-group"
 import { RangeSlider } from "./range-slider"
 import { Title } from "./title"
-import { useEffect, useRef, useState } from "react"
-import { useSet } from "react-use"
-import qs from "qs"
-import { useRouter, useSearchParams } from "next/navigation"
 
 interface Props {
    className?: string
 }
 
-interface PriceProps {
-   priceFrom?: number
-   priceTo?: number
-}
-
-interface Queryfilters extends PriceProps {
-   sizes: string
-   pizzaTypes: string
-   ingredients: string
-}
 
 export const Filters = ({ className }: Props) => {
-   const searchParams = useSearchParams() as unknown as Map<keyof Queryfilters, string>
-   const router = useRouter()
-   const { ingredients, loading, onAddId, selectedIngredients } = useFilterIngredients(searchParams.get('ingredients')?.split(','))
-   const [price, setPrice] = useState<PriceProps>({
-      priceFrom: Number(searchParams.get('priceFrom')) || undefined,
-      priceTo: Number(searchParams.get('priceTo')) || undefined
-   })
 
-   const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>(searchParams.get("sizes")?.split(',') || []));
-   const [pizzaTypes, { toggle: togglePizzaTypes }] = useSet(new Set<string>(searchParams.get('pizzaTypes')?.split(',') || []));
+   const {
+      togglePizzaTypes, pizzaTypes,
+      toggleSizes, sizes,
+      toggleIngredients, selectedIngredients,
+      setPrice, updatePrice, price,
+   } = useFilters()
 
+   useQueryFilters({ pizzaTypes, sizes, price, selectedIngredients })
 
-
-   useEffect(() => {
-
-      const filters = {
-         ...price,
-         sizes: Array.from(sizes),
-         pizzaTypes: Array.from(pizzaTypes),
-         ingredients: Array.from(selectedIngredients),
-      }
-
-      const query = qs.stringify(filters, {
-         arrayFormat: "comma"
-      })
-
-      router.push(`?${query}`, { scroll: false })
-
-   }, [pizzaTypes, sizes, price, selectedIngredients])
-
+   const { ingredients, loading } = useGetIngredients()
 
    const items = ingredients.map((item) => ({
       text: item.name,
       value: String(item.id),
    }))
-
-   const updatePrice = (name: keyof PriceProps, value: number) => {
-      setPrice((prev) => ({
-         ...prev,
-         [name]: value,
-      }))
-   }
 
 
    return (
@@ -126,7 +86,7 @@ export const Filters = ({ className }: Props) => {
             items={items}
             limit={6}
             loading={loading}
-            onclickCheckbox={onAddId}
+            onclickCheckbox={toggleIngredients}
             selected={selectedIngredients}
          />
       </div>
