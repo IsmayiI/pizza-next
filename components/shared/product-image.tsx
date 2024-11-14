@@ -9,11 +9,11 @@ interface Props {
 
 export const ProductImage = ({ className, imageUrl, size }: Props) => {
    return (
-      <div className={className}>
+      <div className={cn("relative flex items-center justify-center flex-1 w-full", className)}>
          <img
             src={imageUrl}
             alt="Logo"
-            className={cn("relative left-2 top-2 transition-all duration-300", {
+            className={cn("relative left-2 top-2 transition-all duration-300 z-10", {
                'w-[300px] h-[300px]': size === 20,
                'w-[400px] h-[400px]': size === 30,
                'w-[500px] h-[500px]': size === 40,
