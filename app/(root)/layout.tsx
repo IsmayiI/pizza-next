@@ -5,14 +5,17 @@ export const metadata: Metadata = {
    title: "Next Pizza | Главная",
 };
 
-export default function RootLayout({
+export default function HomeLayout({
    children,
-}: Readonly<{
+   modal
+}: {
    children: React.ReactNode;
-}>) {
+   modal: React.ReactNode;
+}) {
    return (
       <main className="min-h-screen">
          <Header />
+         {modal}
          {children}
       </main>
    );
